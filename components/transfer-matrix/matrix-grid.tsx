@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import {
   programs,
   partners,
@@ -219,11 +220,23 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                         : 1,
                   }}
                 >
-                  <span
-                    className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                      partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
-                    }`}
-                  />
+                  {partner.logoUrl ? (
+                    <Image
+                      src={partner.logoUrl}
+                      alt={partner.shortName}
+                      width={20}
+                      height={20}
+                      className="flex-shrink-0 object-contain"
+                    />
+                  ) : (
+                    <span
+                      className={`w-5 h-5 rounded flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white ${
+                        partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
+                      }`}
+                    >
+                      {partner.shortName.charAt(0)}
+                    </span>
+                  )}
                   <span className="truncate">{partner.shortName}</span>
                 </button>
 

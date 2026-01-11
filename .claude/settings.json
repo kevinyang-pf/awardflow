@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")"
+      "Bash(export PATH=\"/opt/homebrew/bin:$PATH\")",
+      "Bash(PATH=\"/opt/homebrew/bin:/usr/bin:$PATH\")",
+      "Bash(curl -sO \"https://cdn.simpleicons.org/ana/white\")",
+      "Bash(curl:*)"
     ]
   }
 }
