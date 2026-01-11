@@ -1,65 +1,121 @@
-import Image from "next/image";
+import Link from "next/link";
+import { programs, partners, relationships } from "@/data/transfer-partners";
 
 export default function Home() {
+  const airlineCount = partners.filter((p) => p.type === "airline").length;
+  const hotelCount = partners.filter((p) => p.type === "hotel").length;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex flex-col">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-brand-gradient py-24 md:py-32">
+        <div className="container max-w-screen-2xl px-4 md:px-8">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+              MAXIMIZE YOUR POINTS
+            </h1>
+            <p className="text-lg md:text-xl text-white/80 mb-8">
+              Explore transfer partner relationships between credit card
+              programs and airline & hotel loyalty programs. Find the best
+              transfer ratios and unlock more value from your points.
+            </p>
+            <Link
+              href="/transfer-matrix"
+              className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg bg-white text-[var(--color-brand-secondary)] hover:bg-white/90 transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              View Transfer Matrix
+            </Link>
+          </div>
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-white/5" />
+        <div className="absolute -right-10 top-40 w-60 h-60 rounded-full bg-white/5" />
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="container max-w-screen-2xl px-4 md:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-[var(--color-brand-primary)]">
+                {programs.length}
+              </div>
+              <div className="text-sm md:text-base text-muted-foreground mt-2">
+                Card Programs
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-[var(--color-brand-primary)]">
+                {airlineCount}
+              </div>
+              <div className="text-sm md:text-base text-muted-foreground mt-2">
+                Airline Partners
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-[var(--color-brand-primary)]">
+                {hotelCount}
+              </div>
+              <div className="text-sm md:text-base text-muted-foreground mt-2">
+                Hotel Partners
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-[var(--color-brand-primary)]">
+                {relationships.length}
+              </div>
+              <div className="text-sm md:text-base text-muted-foreground mt-2">
+                Transfer Options
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Programs Preview */}
+      <section className="py-16 md:py-20 bg-muted/30">
+        <div className="container max-w-screen-2xl px-4 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-8 text-center">
+            Supported Programs
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            {programs.map((program) => (
+              <div
+                key={program.id}
+                className="flex flex-col items-center p-4 rounded-lg bg-background border border-border/50"
+              >
+                <div
+                  className="w-10 h-10 rounded-full mb-3"
+                  style={{ backgroundColor: program.color }}
+                />
+                <span className="text-sm font-medium text-center">
+                  {program.shortName}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="container max-w-screen-2xl px-4 md:px-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+            Ready to explore?
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+            Click on any program to see all its transfer partners, or click on a
+            partner to see which cards transfer to it.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/transfer-matrix"
+            className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg bg-brand-gradient text-white hover:opacity-90 transition-opacity"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Open Transfer Matrix
+          </Link>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
