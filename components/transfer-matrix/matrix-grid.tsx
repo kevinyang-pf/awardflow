@@ -105,7 +105,7 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
         </button>
       )}
 
-      <div className="min-w-[800px]">
+      <div className="min-w-[800px] max-w-[1100px] mx-auto">
         {/* Header row with program names */}
         <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1">
           <div className="p-2" /> {/* Empty corner cell */}
