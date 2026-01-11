@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 export function Header() {
   return (
@@ -13,13 +14,14 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4">
           <Link
             href="/transfer-matrix"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Transfer Matrix
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
