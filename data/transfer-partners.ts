@@ -3,7 +3,19 @@ import type {
   TransferPartner,
   TransferRelationship,
   TransferPartnerData,
+  Alliance,
 } from "@/types";
+
+// Alliance metadata for display
+export const allianceInfo: Record<Alliance, { name: string; displayName: string; color: string }> = {
+  "star-alliance": { name: "Star Alliance", displayName: "Star Alliance", color: "#115740" },
+  "oneworld": { name: "OneWorld", displayName: "oneworld", color: "#6B2C57" },
+  "skyteam": { name: "SkyTeam", displayName: "SkyTeam", color: "#0066B3" },
+  "none": { name: "Independent", displayName: "Independent Airlines", color: "#666666" },
+};
+
+// Display order for alliances
+export const ALLIANCE_ORDER: Alliance[] = ["star-alliance", "oneworld", "skyteam", "none"];
 
 // Credit Card Programs
 export const programs: CreditCardProgram[] = [
@@ -327,4 +339,9 @@ export function formatRatio(ratio: { from: number; to: number }): string {
   if (ratio.from === 1) return `1:${ratio.to}`;
   if (ratio.to === 1) return `${ratio.from}:1`;
   return `${ratio.from}:${ratio.to}`;
+}
+
+// Get airlines grouped by alliance
+export function getAirlinesByAlliance(alliance: Alliance): TransferPartner[] {
+  return airlinePartners.filter((p) => p.alliance === alliance);
 }

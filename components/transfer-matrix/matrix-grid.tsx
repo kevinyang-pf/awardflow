@@ -7,8 +7,10 @@ import {
   relationships,
   formatRatio,
   getRelationship,
+  allianceInfo,
+  ALLIANCE_ORDER,
 } from "@/data/transfer-partners";
-import type { CreditCardProgramId, PartnerType } from "@/types";
+import type { CreditCardProgramId, PartnerType, Alliance, TransferPartner } from "@/types";
 
 interface MatrixGridProps {
   filter: PartnerType | "all";
@@ -31,6 +33,44 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
       return matchesType && matchesSearch;
     });
   }, [filter, searchQuery]);
+
+  // Group partners by alliance (airlines) or type (hotels)
+  const groupedPartners = useMemo(() => {
+    const groups: { key: string; label: string; color: string; partners: TransferPartner[] }[] = [];
+
+    if (filter !== "hotel") {
+      // Add airline groups by alliance
+      for (const alliance of ALLIANCE_ORDER) {
+        const airlinesInGroup = filteredPartners.filter(
+          (p) => p.type === "airline" && p.alliance === alliance
+        );
+        if (airlinesInGroup.length > 0) {
+          const info = allianceInfo[alliance];
+          groups.push({
+            key: alliance,
+            label: info.displayName,
+            color: info.color,
+            partners: airlinesInGroup,
+          });
+        }
+      }
+    }
+
+    if (filter !== "airline") {
+      // Add hotels group
+      const hotels = filteredPartners.filter((p) => p.type === "hotel");
+      if (hotels.length > 0) {
+        groups.push({
+          key: "hotels",
+          label: "Hotels",
+          color: "#D97706", // amber-600
+          partners: hotels,
+        });
+      }
+    }
+
+    return groups;
+  }, [filter, filteredPartners]);
 
   // Get partners for a program
   const getProgramPartnerIds = (programId: CreditCardProgramId): string[] => {
@@ -135,74 +175,98 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
           ))}
         </div>
 
-        {/* Partner rows */}
-        {filteredPartners.map((partner) => (
-          <div
-            key={partner.id}
-            className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1"
-          >
-            {/* Partner name cell */}
-            <button
-              onClick={() => handlePartnerClick(partner.id)}
-              className={`p-2 text-left text-sm rounded-md transition-all cursor-pointer flex items-center gap-2 ${
-                selectedPartner === partner.id
-                  ? "ring-2 ring-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/10"
-                  : "hover:bg-muted"
-              }`}
-              style={{
-                opacity:
-                  selectedProgram &&
-                  !getProgramPartnerIds(selectedProgram).includes(partner.id)
-                    ? 0.3
-                    : 1,
-              }}
-            >
-              <span
-                className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                  partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
-                }`}
-              />
-              <span className="truncate">{partner.shortName}</span>
-            </button>
-
-            {/* Ratio cells */}
-            {programs.map((program) => {
-              const relationship = getRelationship(program.id, partner.id);
-              const isHighlighted = isCellHighlighted(program.id, partner.id);
-              const dimmed = isDimmed(program.id, partner.id);
-
-              return (
-                <div
-                  key={`${program.id}-${partner.id}`}
-                  className={`p-2 text-center text-xs rounded-md transition-all ${
-                    relationship
-                      ? isHighlighted
-                        ? "bg-[var(--color-brand-primary)]/20 text-foreground font-medium"
-                        : dimmed
-                        ? "bg-muted/30 text-muted-foreground/50"
-                        : "bg-muted/50 text-foreground"
-                      : "bg-transparent"
-                  }`}
+        {/* Partner rows grouped by alliance/type */}
+        {groupedPartners.map((group) => (
+          <div key={group.key}>
+            {/* Section header */}
+            <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mt-6 mb-2 first:mt-0">
+              <div className="flex items-center gap-2 px-2">
+                <span
+                  className="text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: group.color }}
                 >
-                  {relationship ? (
-                    <span
-                      className={
-                        relationship.ratio.from === 1 &&
-                        relationship.ratio.to === 1
-                          ? "text-green-600 dark:text-green-400"
-                          : relationship.ratio.to > relationship.ratio.from
-                          ? "text-[var(--color-brand-gold)]"
-                          : "text-muted-foreground"
-                      }
+                  {group.label}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  ({group.partners.length})
+                </span>
+              </div>
+              {/* Empty cells for alignment */}
+              {programs.map((p) => (
+                <div key={p.id} />
+              ))}
+            </div>
+
+            {/* Partner rows in this group */}
+            {group.partners.map((partner) => (
+              <div
+                key={partner.id}
+                className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1"
+              >
+                {/* Partner name cell */}
+                <button
+                  onClick={() => handlePartnerClick(partner.id)}
+                  className={`p-2 text-left text-sm rounded-md transition-all cursor-pointer flex items-center gap-2 ${
+                    selectedPartner === partner.id
+                      ? "ring-2 ring-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/10"
+                      : "hover:bg-muted"
+                  }`}
+                  style={{
+                    opacity:
+                      selectedProgram &&
+                      !getProgramPartnerIds(selectedProgram).includes(partner.id)
+                        ? 0.3
+                        : 1,
+                  }}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
+                    }`}
+                  />
+                  <span className="truncate">{partner.shortName}</span>
+                </button>
+
+                {/* Ratio cells */}
+                {programs.map((program) => {
+                  const relationship = getRelationship(program.id, partner.id);
+                  const isHighlighted = isCellHighlighted(program.id, partner.id);
+                  const dimmed = isDimmed(program.id, partner.id);
+
+                  return (
+                    <div
+                      key={`${program.id}-${partner.id}`}
+                      className={`p-2 text-center text-xs rounded-md transition-all ${
+                        relationship
+                          ? isHighlighted
+                            ? "bg-[var(--color-brand-primary)]/20 text-foreground font-medium"
+                            : dimmed
+                            ? "bg-muted/30 text-muted-foreground/50"
+                            : "bg-muted/50 text-foreground"
+                          : "bg-transparent"
+                      }`}
                     >
-                      {formatRatio(relationship.ratio)}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground/30">—</span>
-                  )}
-                </div>
-              );
-            })}
+                      {relationship ? (
+                        <span
+                          className={
+                            relationship.ratio.from === 1 &&
+                            relationship.ratio.to === 1
+                              ? "text-green-600 dark:text-green-400"
+                              : relationship.ratio.to > relationship.ratio.from
+                              ? "text-[var(--color-brand-gold)]"
+                              : "text-muted-foreground"
+                          }
+                        >
+                          {formatRatio(relationship.ratio)}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/30">—</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         ))}
       </div>
