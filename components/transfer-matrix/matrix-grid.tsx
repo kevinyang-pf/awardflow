@@ -11,7 +11,53 @@ import {
   allianceInfo,
   ALLIANCE_ORDER,
 } from "@/data/transfer-partners";
+import { getBookablePartners, getBookingNotes } from "@/data/partner-bookings";
 import type { CreditCardProgramId, PartnerType, Alliance, TransferPartner } from "@/types";
+
+// Partner booking badge component with tooltip
+function PartnerBookingBadge({ partnerId }: { partnerId: string }) {
+  const bookable = getBookablePartners(partnerId);
+  const notes = getBookingNotes(partnerId);
+
+  if (bookable.length === 0) return null;
+
+  // Get partner names for display
+  const bookableNames = bookable
+    .map((id) => partners.find((p) => p.id === id)?.shortName || id)
+    .slice(0, 5);
+  const moreCount = bookable.length - 5;
+
+  return (
+    <div className="relative group">
+      <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 cursor-help whitespace-nowrap">
+        {bookable.length} partners
+      </span>
+      <div className="absolute hidden group-hover:block left-0 top-full mt-1 z-50 p-3 bg-popover border border-border rounded-lg shadow-lg min-w-[220px] max-w-[280px]">
+        <p className="text-xs font-semibold mb-2 text-foreground">Can book awards on:</p>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {bookableNames.map((name) => (
+            <span
+              key={name}
+              className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-foreground"
+            >
+              {name}
+            </span>
+          ))}
+          {moreCount > 0 && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+              +{moreCount} more
+            </span>
+          )}
+        </div>
+        {notes && (
+          <p className="text-[10px] text-muted-foreground italic border-t border-border pt-2">
+            {notes}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface MatrixGridProps {
   filter: PartnerType | "all";
@@ -205,9 +251,8 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                 className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1"
               >
                 {/* Partner name cell */}
-                <button
-                  onClick={() => handlePartnerClick(partner.id)}
-                  className={`p-2 text-left text-sm rounded-md transition-all cursor-pointer flex items-center gap-2 ${
+                <div
+                  className={`p-2 text-left text-sm rounded-md transition-all flex items-center gap-2 ${
                     selectedPartner === partner.id
                       ? "ring-2 ring-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/10"
                       : "hover:bg-muted"
@@ -220,25 +265,33 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                         : 1,
                   }}
                 >
-                  {partner.logoUrl ? (
-                    <Image
-                      src={partner.logoUrl}
-                      alt={partner.shortName}
-                      width={20}
-                      height={20}
-                      className="flex-shrink-0 object-contain"
-                    />
-                  ) : (
-                    <span
-                      className={`w-5 h-5 rounded flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white ${
-                        partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
-                      }`}
-                    >
-                      {partner.shortName.charAt(0)}
-                    </span>
+                  <button
+                    onClick={() => handlePartnerClick(partner.id)}
+                    className="flex items-center gap-2 cursor-pointer flex-1 min-w-0"
+                  >
+                    {partner.logoUrl ? (
+                      <Image
+                        src={partner.logoUrl}
+                        alt={partner.shortName}
+                        width={20}
+                        height={20}
+                        className="flex-shrink-0 object-contain"
+                      />
+                    ) : (
+                      <span
+                        className={`w-5 h-5 rounded flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white ${
+                          partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
+                        }`}
+                      >
+                        {partner.shortName.charAt(0)}
+                      </span>
+                    )}
+                    <span className="truncate">{partner.shortName}</span>
+                  </button>
+                  {partner.type === "airline" && (
+                    <PartnerBookingBadge partnerId={partner.id} />
                   )}
-                  <span className="truncate">{partner.shortName}</span>
-                </button>
+                </div>
 
                 {/* Ratio cells */}
                 {programs.map((program) => {
