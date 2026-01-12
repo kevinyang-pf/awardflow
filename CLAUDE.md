@@ -40,12 +40,16 @@ awardflow/
 │   └── transfer-matrix/
 │       └── matrix-grid.tsx      # Interactive matrix grid component
 ├── data/
-│   └── transfer-partners.ts     # All programs, partners, relationships
+│   ├── transfer-partners.ts     # All programs, partners, relationships
+│   └── partner-bookings.ts      # Partner award booking connections
 ├── lib/
 │   └── utils.ts                 # cn() utility for class merging
 ├── types/
 │   └── index.ts                 # TypeScript interfaces
-└── public/                      # Static assets
+└── public/
+    └── logos/
+        ├── airlines/            # 41 airline SVG logos
+        └── alliances/           # 3 alliance logos (Star Alliance, oneworld, SkyTeam)
 ```
 
 ## Component Hierarchy
@@ -72,10 +76,10 @@ RootLayout (app/layout.tsx)
 CreditCardProgramId = "chase" | "amex" | "citi" | "capital-one" | "bilt" | "wells-fargo" | "marriott"
 CreditCardProgram { id, name, shortName, color, pointsName }
 
-// Transfer Partners (40 airlines + 9 hotels = 49 total)
+// Transfer Partners (41 airlines + 9 hotels = 50 total)
 PartnerType = "airline" | "hotel"
 Alliance = "oneworld" | "skyteam" | "star-alliance" | "none"
-TransferPartner { id, name, shortName, type, alliance?, country? }
+TransferPartner { id, name, shortName, type, alliance?, country?, logoUrl? }
 
 // Transfer Relationships (169 mappings)
 TransferRatio { from, to }  // e.g., { from: 1, to: 1 } = 1:1 ratio
@@ -89,16 +93,27 @@ MatrixFilter { partnerType, searchQuery, selectedProgram, selectedPartner }
 
 **Exports:**
 - `programs[]` - 7 credit card programs with brand colors
-- `airlinePartners[]` - 40 airline loyalty programs
+- `airlinePartners[]` - 41 airline loyalty programs with logos and alliance info
 - `hotelPartners[]` - 9 hotel loyalty programs
 - `partners[]` - Combined array (airlines + hotels)
 - `relationships[]` - 169 transfer mappings with ratios
+- `allianceInfo` - Metadata for each alliance (name, color)
+- `ALLIANCE_ORDER` - Display order for alliance grouping
 
 **Helper Functions:**
 - `getPartnersByProgram(programId)` - All partners for a program
 - `getProgramsByPartner(partnerId)` - All programs transferring to a partner
 - `getRelationship(programId, partnerId)` - Specific transfer relationship
 - `formatRatio(ratio)` - Display format (e.g., "1:1", "3:1")
+- `getAirlinesByAlliance(alliance)` - Get airlines in an alliance
+
+### Partner Bookings (`data/partner-bookings.ts`)
+
+**Exports:**
+- `partnerBookings[]` - 18 airline programs with their bookable partner airlines
+- `getBookablePartners(programId)` - Get airlines you can book awards on
+- `getBookingNotes(programId)` - Get sweet spot notes for a program
+- `getProgramsBookingOn(airlineId)` - Get programs that can book on an airline
 
 ### Data Flow
 
@@ -139,11 +154,15 @@ transfer-partners.ts (static data)
 - Interactive 7-column grid (programs × partners)
 - Click program header → highlight all its partners
 - Click partner row → highlight all programs that transfer
+- **Alliance Grouping** - Airlines grouped by Star Alliance, oneworld, SkyTeam, Independent
+- **Airline Logos** - SVG logos displayed next to airline names (with fallback to initials)
+- **Partner Booking Badges** - Purple badges showing which airlines you can book awards on
 - Color coding:
   - Green (#00C400) = 1:1 ratio (best value)
   - Gold (#FFD700) = bonus ratio (e.g., 1:2)
 - Uses useMemo for filtered partner calculations
 - Manages selectedProgram and selectedPartner state
+- Grid centered with `max-w-[1100px] mx-auto`
 
 ### `app/globals.css` - Brand Styling
 ```css
@@ -214,13 +233,17 @@ npm run lint     # Run ESLint
 5. **Ratio Display** - Color-coded transfer ratios
 6. **Dark/Light Mode** - Theme toggle with system detection
 7. **Responsive** - Works on mobile, tablet, desktop
+8. **Alliance Grouping** - Airlines grouped by Star Alliance, oneworld, SkyTeam, Independent
+9. **Airline Logos** - 41 SVG logos from Simple Icons with text fallbacks
+10. **Partner Award Bookings** - Shows which airlines let you book awards on other carriers
 
 ## Data Statistics
 
 - **7** Credit Card Programs
-- **40** Airline Partners
+- **41** Airline Partners (13 Star Alliance, 10 oneworld, 4 SkyTeam, 14 Independent)
 - **9** Hotel Partners
 - **169** Transfer Relationships
+- **18** Partner Booking Programs (with sweet spot data)
 
 ## Future Considerations
 
