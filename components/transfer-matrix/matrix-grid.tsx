@@ -182,7 +182,7 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
   };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full">
       {(selectedProgram || selectedPartner) && (
         <button
           onClick={clearSelection}
@@ -192,7 +192,8 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
         </button>
       )}
 
-      <div className="min-w-[900px] max-w-[1200px] mx-auto">
+      <div className="overflow-x-auto">
+        <div className="min-w-[1000px]">
         {/* Header row with program names */}
         <div className="grid grid-cols-[100px_220px_repeat(7,1fr)] gap-1 mb-2">
           <div className="py-4 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-end">
@@ -218,10 +219,22 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                     : 1,
               }}
             >
-              <div
-                className="w-3 h-3 rounded-full mb-1"
-                style={{ backgroundColor: program.color }}
-              />
+              {program.logoUrl ? (
+                <div className="w-6 h-6 mb-1 flex items-center justify-center rounded bg-muted/50 dark:bg-transparent p-0.5">
+                  <Image
+                    src={program.logoUrl}
+                    alt={program.shortName}
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="w-3 h-3 rounded-full mb-1"
+                  style={{ backgroundColor: program.color }}
+                />
+              )}
               <span className="block truncate">{program.shortName}</span>
             </button>
           ))}
@@ -277,13 +290,15 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                     className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                   >
                     {partner.logoUrl ? (
-                      <Image
-                        src={partner.logoUrl}
-                        alt={partner.shortName}
-                        width={28}
-                        height={28}
-                        className="flex-shrink-0 object-contain"
-                      />
+                      <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded bg-muted/50 dark:bg-transparent p-0.5">
+                        <Image
+                          src={partner.logoUrl}
+                          alt={partner.shortName}
+                          width={24}
+                          height={24}
+                          className="object-contain"
+                        />
+                      </div>
                     ) : (
                       <span
                         className={`w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-xs font-bold text-white ${
@@ -342,6 +357,7 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
             ))}
           </div>
         ))}
+        </div>
       </div>
 
       {filteredPartners.length === 0 && (
