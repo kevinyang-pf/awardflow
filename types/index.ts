@@ -14,6 +14,7 @@ export interface CreditCardProgram {
   shortName: string;
   color: string; // Brand color for visual identification
   pointsName: string; // e.g., "Ultimate Rewards", "Membership Rewards"
+  logoUrl?: string; // Optional logo path
 }
 
 // Transfer Partner Types

@@ -25,6 +25,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Chase",
     color: "#0A4B94",
     pointsName: "Ultimate Rewards",
+    logoUrl: "/logos/programs/chase.svg",
   },
   {
     id: "amex",
@@ -32,6 +33,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Amex",
     color: "#006FCF",
     pointsName: "Membership Rewards",
+    logoUrl: "/logos/programs/amex.svg",
   },
   {
     id: "citi",
@@ -39,6 +41,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Citi",
     color: "#003DA5",
     pointsName: "ThankYou Points",
+    logoUrl: "/logos/programs/citi.svg",
   },
   {
     id: "capital-one",
@@ -46,6 +49,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Capital One",
     color: "#D03027",
     pointsName: "Miles",
+    logoUrl: "/logos/programs/capital-one.svg",
   },
   {
     id: "bilt",
@@ -53,6 +57,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Bilt",
     color: "#000000",
     pointsName: "Bilt Points",
+    logoUrl: "/logos/programs/bilt.svg",
   },
   {
     id: "wells-fargo",
@@ -60,6 +65,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Wells Fargo",
     color: "#D71E28",
     pointsName: "Rewards",
+    logoUrl: "/logos/programs/wells-fargo.svg",
   },
   {
     id: "marriott",
@@ -67,6 +73,7 @@ export const programs: CreditCardProgram[] = [
     shortName: "Marriott",
     color: "#A4343A",
     pointsName: "Bonvoy Points",
+    logoUrl: "/logos/programs/marriott.svg",
   },
 ];
 
@@ -117,15 +124,15 @@ export const airlinePartners: TransferPartner[] = [
 
 // Transfer Partners - Hotels
 export const hotelPartners: TransferPartner[] = [
-  { id: "accor", name: "Accor Live Limitless (ALL)", shortName: "Accor", type: "hotel", country: "France" },
-  { id: "choice", name: "Choice Privileges", shortName: "Choice", type: "hotel", country: "USA" },
-  { id: "hilton", name: "Hilton Honors", shortName: "Hilton", type: "hotel", country: "USA" },
-  { id: "hyatt", name: "World of Hyatt", shortName: "Hyatt", type: "hotel", country: "USA" },
-  { id: "ihg", name: "IHG One Rewards", shortName: "IHG", type: "hotel", country: "UK" },
-  { id: "i-prefer", name: "I Prefer Hotel Rewards", shortName: "I Prefer", type: "hotel", country: "USA" },
-  { id: "leading-hotels", name: "Leading Hotels of the World", shortName: "LHW", type: "hotel", country: "USA" },
-  { id: "marriott", name: "Marriott Bonvoy", shortName: "Marriott", type: "hotel", country: "USA" },
-  { id: "wyndham", name: "Wyndham Rewards", shortName: "Wyndham", type: "hotel", country: "USA" },
+  { id: "accor", name: "Accor Live Limitless (ALL)", shortName: "Accor", type: "hotel", country: "France", logoUrl: "/logos/hotels/accor.svg" },
+  { id: "choice", name: "Choice Privileges", shortName: "Choice", type: "hotel", country: "USA", logoUrl: "/logos/hotels/choice.svg" },
+  { id: "hilton", name: "Hilton Honors", shortName: "Hilton", type: "hotel", country: "USA", logoUrl: "/logos/hotels/hilton.svg" },
+  { id: "hyatt", name: "World of Hyatt", shortName: "Hyatt", type: "hotel", country: "USA", logoUrl: "/logos/hotels/hyatt.svg" },
+  { id: "ihg", name: "IHG One Rewards", shortName: "IHG", type: "hotel", country: "UK", logoUrl: "/logos/hotels/ihg.svg" },
+  { id: "i-prefer", name: "I Prefer Hotel Rewards", shortName: "I Prefer", type: "hotel", country: "USA", logoUrl: "/logos/hotels/i-prefer.svg" },
+  { id: "leading-hotels", name: "Leading Hotels of the World", shortName: "LHW", type: "hotel", country: "USA", logoUrl: "/logos/hotels/leading-hotels.svg" },
+  { id: "marriott", name: "Marriott Bonvoy", shortName: "Marriott", type: "hotel", country: "USA", logoUrl: "/logos/hotels/marriott.svg" },
+  { id: "wyndham", name: "Wyndham Rewards", shortName: "Wyndham", type: "hotel", country: "USA", logoUrl: "/logos/hotels/wyndham.svg" },
 ];
 
 export const partners: TransferPartner[] = [...airlinePartners, ...hotelPartners];
