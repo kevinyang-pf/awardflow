@@ -192,15 +192,20 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
         </button>
       )}
 
-      <div className="min-w-[800px] max-w-[1100px] mx-auto">
+      <div className="min-w-[900px] max-w-[1200px] mx-auto">
         {/* Header row with program names */}
-        <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1">
-          <div className="p-2" /> {/* Empty corner cell */}
+        <div className="grid grid-cols-[100px_220px_repeat(7,1fr)] gap-1 mb-2">
+          <div className="py-4 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-end">
+            Alliance
+          </div>
+          <div className="py-4 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-end">
+            Program
+          </div>
           {programs.map((program) => (
             <button
               key={program.id}
               onClick={() => handleProgramClick(program.id)}
-              className={`p-2 text-xs font-semibold text-center rounded-md transition-all cursor-pointer ${
+              className={`py-4 px-2 text-xs font-semibold text-center rounded-md transition-all cursor-pointer flex flex-col items-center justify-end ${
                 selectedProgram === program.id
                   ? "ring-2 ring-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/10"
                   : "hover:bg-muted"
@@ -214,7 +219,7 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
               }}
             >
               <div
-                className="w-3 h-3 rounded-full mx-auto mb-1"
+                className="w-3 h-3 rounded-full mb-1"
                 style={{ backgroundColor: program.color }}
               />
               <span className="block truncate">{program.shortName}</span>
@@ -223,36 +228,38 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
         </div>
 
         {/* Partner rows grouped by alliance/type */}
-        {groupedPartners.map((group) => (
+        {groupedPartners.map((group, groupIndex) => (
           <div key={group.key}>
-            {/* Section header */}
-            <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mt-6 mb-2 first:mt-0">
-              <div className="flex items-center gap-2 px-2">
-                <span
-                  className="text-xs font-semibold uppercase tracking-wide"
-                  style={{ color: group.color }}
-                >
-                  {group.label}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  ({group.partners.length})
-                </span>
-              </div>
-              {/* Empty cells for alignment */}
-              {programs.map((p) => (
-                <div key={p.id} />
-              ))}
-            </div>
-
             {/* Partner rows in this group */}
-            {group.partners.map((partner) => (
+            {group.partners.map((partner, partnerIndex) => (
               <div
                 key={partner.id}
-                className="grid grid-cols-[200px_repeat(7,1fr)] gap-1 mb-1"
+                className="grid grid-cols-[100px_220px_repeat(7,1fr)] gap-1 mb-1"
               >
+                {/* Alliance column - only show label for first partner in group */}
+                <div
+                  className="py-4 px-2 text-left flex items-center"
+                  style={{
+                    opacity:
+                      selectedProgram &&
+                      !getProgramPartnerIds(selectedProgram).includes(partner.id)
+                        ? 0.3
+                        : 1,
+                  }}
+                >
+                  {partnerIndex === 0 && (
+                    <span
+                      className="text-xs font-semibold uppercase tracking-wide"
+                      style={{ color: group.color }}
+                    >
+                      {group.label}
+                    </span>
+                  )}
+                </div>
+
                 {/* Partner name cell */}
                 <div
-                  className={`p-2 text-left text-sm rounded-md transition-all flex items-center gap-2 ${
+                  className={`py-4 px-2 text-left text-sm rounded-md transition-all flex items-center gap-2 ${
                     selectedPartner === partner.id
                       ? "ring-2 ring-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/10"
                       : "hover:bg-muted"
@@ -267,19 +274,19 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                 >
                   <button
                     onClick={() => handlePartnerClick(partner.id)}
-                    className="flex items-center gap-2 cursor-pointer flex-1 min-w-0"
+                    className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                   >
                     {partner.logoUrl ? (
                       <Image
                         src={partner.logoUrl}
                         alt={partner.shortName}
-                        width={20}
-                        height={20}
+                        width={28}
+                        height={28}
                         className="flex-shrink-0 object-contain"
                       />
                     ) : (
                       <span
-                        className={`w-5 h-5 rounded flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-white ${
+                        className={`w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-xs font-bold text-white ${
                           partner.type === "airline" ? "bg-blue-500" : "bg-amber-500"
                         }`}
                       >
@@ -302,7 +309,7 @@ export function MatrixGrid({ filter, searchQuery }: MatrixGridProps) {
                   return (
                     <div
                       key={`${program.id}-${partner.id}`}
-                      className={`p-2 text-center text-xs rounded-md transition-all ${
+                      className={`py-4 px-2 text-center text-xs rounded-md transition-all flex items-center justify-center ${
                         relationship
                           ? isHighlighted
                             ? "bg-[var(--color-brand-primary)]/20 text-foreground font-medium"
